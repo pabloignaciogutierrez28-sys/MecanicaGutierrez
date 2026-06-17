@@ -54,5 +54,5 @@ if __name__ == "__main__":
             encontrado = True
             break # Rompemos el ciclo al encontrar la clave única
             
-    if not encontrar:
+    if not encontrado:
         print(f"Error: No se encontró ningún registro bajo la clave {clave_buscada}.")
