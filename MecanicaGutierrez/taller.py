@@ -59,6 +59,8 @@ section[data-testid="stSidebar"] {
 @dataclass
 class RegistroTurno:
     id_turno: int      # Clave principal
+    nombre_cliente: str  # ¡NUEVO!
+    telefono: str        # ¡NUEVO!
     patente: str
     modelo_auto: str
     tipo_servicio: str
@@ -70,6 +72,8 @@ def guardar_csv():
     for turno in archivo_turnos:
         datos.append({
             "id_turno": turno.id_turno,
+            "nombre_cliente": turno.nombre_cliente,  # ¡NUEVO!
+            "telefono": turno.telefono,              # ¡NUEVO!
             "patente": turno.patente,
             "modelo_auto": turno.modelo_auto,
             "tipo_servicio": turno.tipo_servicio,
@@ -90,9 +94,15 @@ if os.path.exists("turnos.csv"):
     df_csv = pd.read_csv("turnos.csv")
     archivo_turnos = []
     for _, fila in df_csv.iterrows():
+        # Validamos que las columnas existan en el CSV viejo para evitar errores de lectura
+        nom = fila["nombre_cliente"] if "nombre_cliente" in fila else "No registrado"
+        tel = fila["telefono"] if "telefono" in fila else "No registrado"
+        
         archivo_turnos.append(
             RegistroTurno(
                 int(fila["id_turno"]),
+                str(nom),
+                str(tel),
                 fila["patente"],
                 fila["modelo_auto"],
                 fila["tipo_servicio"],
@@ -172,6 +182,11 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.subheader("📋 Archivo de Turnos")
     df = pd.DataFrame([t.__dict__ for t in archivo_turnos])
+    
+    # Reordenamos las columnas del DataFrame para que visualmente quede lindo
+    columnas_ordenadas = ["id_turno", "nombre_cliente", "telefono", "patente", "modelo_auto", "tipo_servicio", "costo", "estado"]
+    df = df.reindex(columns=columnas_ordenadas)
+    
     st.dataframe(
         df,
         use_container_width=True,
@@ -195,7 +210,14 @@ with tab2:
         for turno in archivo_turnos:
             if turno.id_turno == id_input:
                 st.success("✅ Registro encontrado")
-                st.write(f"**ID:** {turno.id_turno}")
+                
+                # Datos Personales agregados a la vista de búsqueda
+                st.markdown("### 👤 Datos del Cliente")
+                st.write(f"**Nombre y Apellido:** {turno.nombre_cliente}")
+                st.write(f"**Teléfono:** {turno.telefono}")
+                
+                st.markdown("### 🚗 Datos del Vehículo y Servicio")
+                st.write(f"**ID de Turno:** {turno.id_turno}")
                 st.write(f"**Patente:** {turno.patente}")
                 st.write(f"**Vehículo:** {turno.modelo_auto}")
                 st.write(f"**Servicio:** {turno.tipo_servicio}")
@@ -250,8 +272,11 @@ with tab3:
                 default=0
             ) + 1
 
+            # Pasamos las nuevas variables al Registro
             nuevo_turno = RegistroTurno(
                 nuevo_id,
+                nombre_cliente.strip(),
+                telefono.strip(),
                 patente.upper(),
                 modelo,
                 servicio,
@@ -265,6 +290,7 @@ with tab3:
             st.success(
                 f"✅ Turno reservado correctamente.\n\n"
                 f"ID asignado: {nuevo_id}\n\n"
+                f"Cliente: {nombre_cliente.strip()}\n\n"
                 f"Fecha solicitada: {fecha}"
             )
             st.balloons()
@@ -321,6 +347,7 @@ with tab5:
 
     if turno_encontrado:
         st.success("✅ Turno encontrado")
+        st.write(f"**Cliente:** {turno_encontrado.nombre_cliente}")
         st.write(f"**Patente:** {turno_encontrado.patente}")
         st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
         st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
@@ -343,7 +370,6 @@ with tab5:
             turno_encontrado.estado = nuevo_estado
             turno_encontrado.costo = nuevo_costo
             
-            # Guardamos los datos modificados en el CSV antes de reiniciar la app
             guardar_csv()
 
             st.success("✅ Turno actualizado correctamente")
