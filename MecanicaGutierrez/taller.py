@@ -13,8 +13,7 @@ st.set_page_config(
 )
 from PIL import Image
 
-imagen = Image.open("mecanica_gutierrez.jpg")
-st.image(imagen, use_container_width=True)
+st.image("imagenes/mecanica_gutierrez.jpg", use_container_width=True)
 )
 st.markdown("""
 <style>
