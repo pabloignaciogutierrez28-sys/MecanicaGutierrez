@@ -1,6 +1,7 @@
 import streamlit as st
 from dataclasses import dataclass
 import pandas as pd
+import os
 
 # ==========================================================
 # CONFIGURACIÓN DE LA PÁGINA
@@ -52,8 +53,9 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 
 # ==========================================================
-# DEFINICIÓN DEL REGISTRO
+# DEFINICIÓN DEL REGISTRO Y FUNCIONES
 # ==========================================================
+
 @dataclass
 class RegistroTurno:
     id_turno: int      # Clave principal
@@ -83,16 +85,11 @@ def guardar_csv():
 # ==========================================================
 # ARCHIVO DE REGISTROS
 # ==========================================================
-import os
 
 if os.path.exists("turnos.csv"):
-
     df_csv = pd.read_csv("turnos.csv")
-
     archivo_turnos = []
-
     for _, fila in df_csv.iterrows():
-
         archivo_turnos.append(
             RegistroTurno(
                 int(fila["id_turno"]),
@@ -103,7 +100,6 @@ if os.path.exists("turnos.csv"):
                 fila["estado"]
             )
         )
-
 else:
     archivo_turnos = []
 
@@ -174,11 +170,8 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # ==========================================================
 
 with tab1:
-
     st.subheader("📋 Archivo de Turnos")
-
     df = pd.DataFrame([t.__dict__ for t in archivo_turnos])
-
     st.dataframe(
         df,
         use_container_width=True,
@@ -190,9 +183,7 @@ with tab1:
 # ==========================================================
 
 with tab2:
-
     st.subheader("🔍 Buscar Turno por ID")
-
     id_input = st.number_input(
         "Ingrese el ID del turno:",
         value=5001,
@@ -200,15 +191,10 @@ with tab2:
     )
 
     if st.button("Buscar"):
-
         encontrado = False
-
         for turno in archivo_turnos:
-
             if turno.id_turno == id_input:
-
                 st.success("✅ Registro encontrado")
-
                 st.write(f"**ID:** {turno.id_turno}")
                 st.write(f"**Patente:** {turno.patente}")
                 st.write(f"**Vehículo:** {turno.modelo_auto}")
@@ -217,10 +203,8 @@ with tab2:
 
                 if turno.estado == "Terminado":
                     st.success("🟢 Estado: Terminado")
-
                 elif turno.estado == "En Taller":
                     st.info("🔵 Estado: En Taller")
-
                 else:
                     st.warning("🟡 Estado: Pendiente")
 
@@ -228,34 +212,18 @@ with tab2:
                 break
 
         if not encontrado:
-            st.error(
-                f"No se encontró ningún registro con ID {id_input}"
-            )
+            st.error(f"No se encontró ningún registro con ID {id_input}")
 
 # ==========================================================
 # TAB 3 - SOLICITAR TURNO
 # ==========================================================
 
 with tab3:
-
     st.subheader("📅 Solicitar Nuevo Turno")
-
-    nombre_cliente = st.text_input(
-        "Nombre y Apellido"
-    )
-
-    telefono = st.text_input(
-        "Teléfono"
-    )
-
-    patente = st.text_input(
-        "Patente"
-    )
-
-    modelo = st.text_input(
-        "Modelo del Vehículo"
-    )
-
+    nombre_cliente = st.text_input("Nombre y Apellido")
+    telefono = st.text_input("Teléfono")
+    patente = st.text_input("Patente")
+    modelo = st.text_input("Modelo del Vehículo")
     servicio = st.selectbox(
         "Tipo de Servicio",
         [
@@ -266,26 +234,17 @@ with tab3:
             "Diagnóstico General"
         ]
     )
-
-    fecha = st.date_input(
-        "Fecha Deseada"
-    )
+    fecha = st.date_input("Fecha Deseada")
 
     if st.button("Reservar Turno"):
-
         if (
             nombre_cliente.strip() == ""
             or telefono.strip() == ""
             or patente.strip() == ""
             or modelo.strip() == ""
         ):
-
-            st.error(
-                "⚠️ Complete todos los campos."
-            )
-
+            st.error("⚠️ Complete todos los campos.")
         else:
-
             nuevo_id = max(
                 (turno.id_turno for turno in archivo_turnos), 
                 default=0
@@ -300,10 +259,7 @@ with tab3:
                 "Pendiente"
             )
 
-            archivo_turnos.append(
-                nuevo_turno
-            )
-
+            archivo_turnos.append(nuevo_turno)
             guardar_csv()
 
             st.success(
@@ -311,7 +267,6 @@ with tab3:
                 f"ID asignado: {nuevo_id}\n\n"
                 f"Fecha solicitada: {fecha}"
             )
-
             st.balloons()
 
 # ==========================================================
@@ -319,9 +274,7 @@ with tab3:
 # ==========================================================
 
 with tab4:
-
     st.subheader("📞 Información de Contacto")
-
     st.markdown("""
 ### 🔧 Mecánica Gutiérrez
 
@@ -345,18 +298,14 @@ with tab4:
 - Diagnóstico Computarizado
 - Alineación y Balanceo
 """)
+    st.success("¡Gracias por confiar en Mecánica Gutiérrez!")
 
-    st.success(
-        "¡Gracias por confiar en Mecánica Gutiérrez!"
-    )
 # ==========================================================
 # TAB 5 - ADMINISTRAR TURNOS
 # ==========================================================
 
 with tab5:
-
     st.subheader("🛠️ Administrar Turnos")
-
     id_admin = st.number_input(
         "Ingrese el ID del turno",
         min_value=1,
@@ -365,26 +314,18 @@ with tab5:
     )
 
     turno_encontrado = None
-
     for turno in archivo_turnos:
         if turno.id_turno == id_admin:
             turno_encontrado = turno
             break
 
     if turno_encontrado:
-
         st.success("✅ Turno encontrado")
-
         st.write(f"**Patente:** {turno_encontrado.patente}")
         st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
         st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
 
-        estados = [
-            "Pendiente",
-            "En Taller",
-            "Terminado"
-        ]
-
+        estados = ["Pendiente", "En Taller", "Terminado"]
         nuevo_estado = st.selectbox(
             "Estado del trabajo",
             estados,
@@ -398,32 +339,22 @@ with tab5:
             step=1000.0
         )
 
-        if st.button(
-            "Guardar Cambios",
-            key="guardar_turno"
-        ):
-
+        if st.button("Guardar Cambios", key="guardar_turno"):
             turno_encontrado.estado = nuevo_estado
             turno_encontrado.costo = nuevo_costo
+            
+            # Guardamos los datos modificados en el CSV antes de reiniciar la app
+            guardar_csv()
 
-            st.success(
-                "✅ Turno actualizado correctamente"
-            )
-
+            st.success("✅ Turno actualizado correctamente")
             st.rerun()
 
     elif id_admin > 0:
-
-        st.warning(
-            "Ingrese un ID válido para buscar un turno."
-        )
+        st.warning("Ingrese un ID válido para buscar un turno.")
 
 # ==========================================================
 # PIE DE PÁGINA
 # ==========================================================
 
 st.divider()
-
-st.caption(
-    "Mecánica Gutiérrez © 2026 | Sistema de Gestión de Turnos"
-)
+st.caption("Mecánica Gutiérrez © 2026 | Sistema de Gestión de Turnos")
