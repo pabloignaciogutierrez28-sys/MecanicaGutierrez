@@ -286,7 +286,7 @@ with tab3:
 
         else:
 
-           nuevo_id = max(
+            nuevo_id = max(
                 (turno.id_turno for turno in archivo_turnos), 
                 default=0
             ) + 1
@@ -299,7 +299,7 @@ with tab3:
                 0.0,
                 "Pendiente"
             )
-           
+
             archivo_turnos.append(
                 nuevo_turno
             )
