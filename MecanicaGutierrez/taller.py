@@ -3,15 +3,42 @@ from dataclasses import dataclass
 import pandas as pd
 
 # ==========================================================
+# ESTILOS VISUALES
+# ==========================================================
+
+st.set_page_config(
+    page_title="Mecánica Gutiérrez",
+    page_icon="🔧",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+.main {
+    background-color: #f5f7fa;
+}
+
+h1 {
+    color: #0d6efd;
+    text-align: center;
+}
+
+[data-testid="stMetric"] {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ==========================================================
 # DEFINICIÓN DEL REGISTRO
 # ==========================================================
-# id_turno es la CLAVE PRINCIPAL del registro.
-# Cada turno posee un identificador único que permite
-# localizarlo mediante búsqueda secuencial.
 
 @dataclass
 class RegistroTurno:
-    id_turno: int
+    id_turno: int      # Clave principal
     patente: str
     modelo_auto: str
     tipo_servicio: str
@@ -20,38 +47,54 @@ class RegistroTurno:
 
 
 # ==========================================================
-# FUNCIONES
-# ==========================================================
-
-def buscar_por_id(id_buscado):
-    for turno in archivo_turnos:
-        if turno.id_turno == id_buscado:
-            return turno
-    return None
-
-
-def buscar_por_patente(patente_buscada):
-    for turno in archivo_turnos:
-        if turno.patente.upper() == patente_buscada.upper():
-            return turno
-    return None
-
-
-# ==========================================================
 # ARCHIVO DE REGISTROS
 # ==========================================================
 
-if "archivo_turnos" not in st.session_state:
-    st.session_state.archivo_turnos = [
-        RegistroTurno(5001, "AA890BB", "Volkswagen Amarok", "Cambio Filtros y Aceite", 45000.0, "En Taller"),
-        RegistroTurno(5002, "AF543CC", "Ford Focus", "Cambio de Pastillas Freno", 32000.0, "Pendiente"),
-        RegistroTurno(5003, "LOK789", "Renault Clio", "Revisión Eléctrica", 15000.0, "Terminado")
-    ]
-
-archivo_turnos = st.session_state.archivo_turnos
+archivo_turnos = [
+    RegistroTurno(
+        5001,
+        "AA890BB",
+        "Volkswagen Amarok",
+        "Cambio Filtros y Aceite",
+        45000.0,
+        "En Taller"
+    ),
+    RegistroTurno(
+        5002,
+        "AF543CC",
+        "Ford Focus",
+        "Cambio de Pastillas Freno",
+        32000.0,
+        "Pendiente"
+    ),
+    RegistroTurno(
+        5003,
+        "LOK789",
+        "Renault Clio",
+        "Revisión Eléctrica",
+        15000.0,
+        "Terminado"
+    )
+]
 
 # ==========================================================
-# INTERFAZ WEB
+# SIDEBAR
+# ==========================================================
+
+st.sidebar.title("🔧 Mecánica Gutiérrez")
+
+st.sidebar.info("""
+Sistema de Gestión de Turnos
+
+Materia:
+Algoritmos y Estructuras de Datos
+
+Proyecto:
+Diseño de E-Commerce con IA
+""")
+
+# ==========================================================
+# ENCABEZADO
 # ==========================================================
 
 st.title("🔧 Mecánica Gutiérrez - Gestión de Turnos")
@@ -78,109 +121,73 @@ col3.metric("Pendientes", pendientes)
 col4.metric("Terminados", terminados)
 
 # ==========================================================
-# LISTADO DE TURNOS
+# PESTAÑAS
 # ==========================================================
 
-st.subheader("📋 Archivo de Turnos")
-
-df = pd.DataFrame([t.__dict__ for t in archivo_turnos])
-st.dataframe(df, use_container_width=True)
+tab1, tab2 = st.tabs([
+    "📋 Turnos",
+    "🔍 Buscar"
+])
 
 # ==========================================================
-# AGREGAR TURNO
+# TAB 1 - LISTADO
 # ==========================================================
 
-st.subheader("➕ Registrar Nuevo Turno")
+with tab1:
 
-with st.form("nuevo_turno"):
+    st.subheader("📋 Archivo de Turnos")
 
-    nuevo_id = st.number_input("ID Turno", min_value=1, step=1)
-    nueva_patente = st.text_input("Patente")
-    nuevo_modelo = st.text_input("Modelo del vehículo")
-    nuevo_servicio = st.text_input("Tipo de servicio")
-    nuevo_costo = st.number_input("Costo", min_value=0.0)
-    nuevo_estado = st.selectbox(
-        "Estado",
-        ["Pendiente", "En Taller", "Terminado"]
+    df = pd.DataFrame([t.__dict__ for t in archivo_turnos])
+
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True
     )
 
-    guardar = st.form_submit_button("Agregar Turno")
+# ==========================================================
+# TAB 2 - BÚSQUEDA
+# ==========================================================
 
-    if guardar:
+with tab2:
 
-        existe = buscar_por_id(nuevo_id)
+    st.subheader("🔍 Buscar Turno por ID")
 
-        if existe:
-            st.error("Ya existe un turno con ese ID.")
-        else:
-            archivo_turnos.append(
-                RegistroTurno(
-                    nuevo_id,
-                    nueva_patente,
-                    nuevo_modelo,
-                    nuevo_servicio,
-                    nuevo_costo,
-                    nuevo_estado
-                )
+    id_input = st.number_input(
+        "Ingrese el ID del turno:",
+        value=5001,
+        step=1
+    )
+
+    if st.button("Buscar"):
+
+        encontrado = False
+
+        for turno in archivo_turnos:
+
+            if turno.id_turno == id_input:
+
+                st.success("¡Registro encontrado!")
+
+                st.write(f"**ID:** {turno.id_turno}")
+                st.write(f"**Patente:** {turno.patente}")
+                st.write(f"**Vehículo:** {turno.modelo_auto}")
+                st.write(f"**Servicio:** {turno.tipo_servicio}")
+                st.write(f"**Costo:** ${turno.costo:,.2f}")
+
+                if turno.estado == "Terminado":
+                    st.success("🟢 Terminado")
+
+                elif turno.estado == "En Taller":
+                    st.info("🔵 En Taller")
+
+                else:
+                    st.warning("🟡 Pendiente")
+
+                encontrado = True
+                break
+
+        if not encontrado:
+            st.error(
+                f"No se encontró ningún registro con ID {id_input}"
             )
-            st.success("Turno agregado correctamente.")
-
-# ==========================================================
-# BÚSQUEDA POR ID
-# ==========================================================
-
-st.subheader("🔍 Buscar Turno por ID")
-
-id_input = st.number_input(
-    "Ingrese el ID del turno",
-    value=5001,
-    step=1,
-    key="buscar_id"
-)
-
-if st.button("Buscar ID"):
-
-    resultado = buscar_por_id(id_input)
-
-    if resultado:
-
-        st.success("¡Registro encontrado!")
-
-        st.write(f"**ID:** {resultado.id_turno}")
-        st.write(f"**Patente:** {resultado.patente}")
-        st.write(f"**Vehículo:** {resultado.modelo_auto}")
-        st.write(f"**Servicio:** {resultado.tipo_servicio}")
-        st.write(f"**Costo:** ${resultado.costo:,.2f}")
-
-        if resultado.estado == "Terminado":
-            st.success(f"Estado: {resultado.estado}")
-        elif resultado.estado == "En Taller":
-            st.info(f"Estado: {resultado.estado}")
-        else:
-            st.warning(f"Estado: {resultado.estado}")
-
-    else:
-        st.error(f"No se encontró ningún registro con ID {id_input}")
-
-# ==========================================================
-# BÚSQUEDA POR PATENTE
-# ==========================================================
-
-st.subheader("🚗 Buscar por Patente")
-
-patente_input = st.text_input("Ingrese la patente")
-
-if st.button("Buscar Patente"):
-
-    resultado = buscar_por_patente(patente_input)
-
-    if resultado:
-        st.success("Vehículo encontrado")
-
-        st.write(f"**ID:** {resultado.id_turno}")
-        st.write(f"**Vehículo:** {resultado.modelo_auto}")
-        st.write(f"**Servicio:** {resultado.tipo_servicio}")
-        st.write(f"**Estado:** {resultado.estado}")
-
-    else:
-        st.error("No se encontró la patente ingresada.")
