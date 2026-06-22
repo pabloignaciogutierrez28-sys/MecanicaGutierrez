@@ -328,7 +328,10 @@ with tab4:
 # ==========================================================
 
 with tab5:
+    with tab5:
+
     st.subheader("🛠️ Administrar Turnos")
+
     id_admin = st.number_input(
         "Ingrese el ID del turno",
         min_value=1,
@@ -337,67 +340,69 @@ with tab5:
     )
 
     turno_encontrado = None
+
     for turno in archivo_turnos:
         if turno.id_turno == id_admin:
             turno_encontrado = turno
             break
 
- if turno_encontrado:
+    if turno_encontrado:
 
-    st.success("✅ Turno encontrado")
+        st.success("✅ Turno encontrado")
 
-    st.write(f"**Cliente:** {turno_encontrado.nombre_cliente}")
-    st.write(f"**Patente:** {turno_encontrado.patente}")
-    st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
-    st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
+        st.write(f"**Cliente:** {turno_encontrado.nombre_cliente}")
+        st.write(f"**Patente:** {turno_encontrado.patente}")
+        st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
+        st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
 
-    estados = ["Pendiente", "En Taller", "Terminado"]
+        estados = ["Pendiente", "En Taller", "Terminado"]
 
-    nuevo_estado = st.selectbox(
-        "Estado del trabajo",
-        estados,
-        index=estados.index(turno_encontrado.estado)
-    )
-
-    nuevo_costo = st.number_input(
-        "Costo Final",
-        min_value=0.0,
-        value=float(turno_encontrado.costo),
-        step=1000.0
-    )
-
-    if st.button("Guardar Cambios", key="guardar_turno"):
-
-        turno_encontrado.estado = nuevo_estado
-        turno_encontrado.costo = nuevo_costo
-
-        guardar_csv()
-
-        st.success("✅ Turno actualizado correctamente")
-        st.rerun()
-
-    st.divider()
-
-    if st.button(
-        "🗑️ Eliminar Turno",
-        key="eliminar_turno"
-    ):
-
-        st.session_state.archivo_turnos = [
-            t for t in st.session_state.archivo_turnos
-            if t.id_turno != turno_encontrado.id_turno
-        ]
-
-        guardar_csv()
-
-        st.success(
-            "✅ Turno eliminado correctamente"
+        nuevo_estado = st.selectbox(
+            "Estado del trabajo",
+            estados,
+            index=estados.index(turno_encontrado.estado)
         )
 
-        st.rerun()
+        nuevo_costo = st.number_input(
+            "Costo Final",
+            min_value=0.0,
+            value=float(turno_encontrado.costo),
+            step=1000.0
+        )
 
-elif id_admin > 0:
+        if st.button("💾 Guardar Cambios", key="guardar_turno"):
 
-    st.warning(
-        "No se encontró ningún turno con ese ID."
-    )
+            turno_encontrado.estado = nuevo_estado
+            turno_encontrado.costo = nuevo_costo
+
+            guardar_csv()
+
+            st.success("✅ Turno actualizado correctamente")
+            st.rerun()
+
+        st.divider()
+
+        if st.button(
+            "🗑️ Eliminar Turno",
+            key="eliminar_turno"
+        ):
+
+            st.session_state.archivo_turnos = [
+                t for t in st.session_state.archivo_turnos
+                if t.id_turno != turno_encontrado.id_turno
+            ]
+
+            guardar_csv()
+
+            st.success(
+                "✅ Turno eliminado correctamente"
+            )
+
+            st.rerun()
+
+    elif id_admin > 0:
+
+        st.warning(
+            "No se encontró ningún turno con ese ID."
+        )
+    
