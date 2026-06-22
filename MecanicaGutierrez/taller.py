@@ -364,13 +364,13 @@ with tab5:
         )
     if st.button("Guardar Cambios", key="guardar_turno"):
 
-    turno_encontrado.estado = nuevo_estado
-    turno_encontrado.costo = nuevo_costo
+        turno_encontrado.estado = nuevo_estado
+        turno_encontrado.costo = nuevo_costo
 
-    guardar_csv()
+        guardar_csv()
 
-    st.success("✅ Turno actualizado correctamente")
-    st.rerun()
+        st.success("✅ Turno actualizado correctamente")
+        st.rerun()
 
 
 # ELIMINAR TURNO
