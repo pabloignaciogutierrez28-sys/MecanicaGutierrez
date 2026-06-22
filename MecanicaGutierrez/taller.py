@@ -11,9 +11,9 @@ st.set_page_config(
     page_icon="🔧",
     layout="wide"
 )
-from PIL import Image
-
-st.image("imagenes/mecanica_gutierrez.jpg", use_container_width=True)
+st.image(
+    "imagenes/mecanica_gutierrez.jpg",
+    use_container_width=True
 )
 st.markdown("""
 <style>
