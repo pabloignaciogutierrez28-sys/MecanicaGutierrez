@@ -1,1 +1,4 @@
-
+id_turno,patente,modelo_auto,tipo_servicio,costo,estado
+5001,AA890BB,Volkswagen Amarok,Cambio Filtros y Aceite,45000,En Taller
+5002,AF543CC,Ford Focus,Cambio de Pastillas Freno,32000,Pendiente
+5003,LOK789,Renault Clio,Revisión Eléctrica,15000,Terminado
