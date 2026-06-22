@@ -107,6 +107,10 @@ archivo_turnos = st.session_state.archivo_turnos
 # ==========================================================
 
 st.sidebar.title("🔧 Mecánica Gutiérrez")
+st.sidebar.image(
+    "MecanicaGutierrez/herramientas.jpg",
+    use_container_width=True
+)
 
 st.sidebar.info("""
 Sistema de Gestión de Turnos
