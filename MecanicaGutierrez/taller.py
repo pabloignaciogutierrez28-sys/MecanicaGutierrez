@@ -342,26 +342,30 @@ with tab5:
             turno_encontrado = turno
             break
 
-    if turno_encontrado:
-        st.success("✅ Turno encontrado")
-        st.write(f"**Cliente:** {turno_encontrado.nombre_cliente}")
-        st.write(f"**Patente:** {turno_encontrado.patente}")
-        st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
-        st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
+ if turno_encontrado:
 
-        estados = ["Pendiente", "En Taller", "Terminado"]
-        nuevo_estado = st.selectbox(
-            "Estado del trabajo",
-            estados,
-            index=estados.index(turno_encontrado.estado)
-        )
+    st.success("✅ Turno encontrado")
 
-        nuevo_costo = st.number_input(
-            "Costo Final",
-            min_value=0.0,
-            value=float(turno_encontrado.costo),
-            step=1000.0
-        )
+    st.write(f"**Cliente:** {turno_encontrado.nombre_cliente}")
+    st.write(f"**Patente:** {turno_encontrado.patente}")
+    st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
+    st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
+
+    estados = ["Pendiente", "En Taller", "Terminado"]
+
+    nuevo_estado = st.selectbox(
+        "Estado del trabajo",
+        estados,
+        index=estados.index(turno_encontrado.estado)
+    )
+
+    nuevo_costo = st.number_input(
+        "Costo Final",
+        min_value=0.0,
+        value=float(turno_encontrado.costo),
+        step=1000.0
+    )
+
     if st.button("Guardar Cambios", key="guardar_turno"):
 
         turno_encontrado.estado = nuevo_estado
@@ -372,22 +376,17 @@ with tab5:
         st.success("✅ Turno actualizado correctamente")
         st.rerun()
 
-
-# ELIMINAR TURNO
-st.divider()
-
-confirmar = st.checkbox(
-    "Confirmo que deseo eliminar este turno"
-)
-
-if confirmar:
+    st.divider()
 
     if st.button(
         "🗑️ Eliminar Turno",
         key="eliminar_turno"
     ):
 
-        archivo_turnos.remove(turno_encontrado)
+        st.session_state.archivo_turnos = [
+            t for t in st.session_state.archivo_turnos
+            if t.id_turno != turno_encontrado.id_turno
+        ]
 
         guardar_csv()
 
@@ -396,12 +395,9 @@ if confirmar:
         )
 
         st.rerun()
-    
-elif id_admin > 0:
-    st.warning("Ingrese un ID válido para buscar un turno.")
-# ==========================================================
-# PIE DE PÁGINA
-# ==========================================================
 
-st.divider()
-st.caption("Mecánica Gutiérrez © 2026 | Sistema de Gestión de Turnos")
+elif id_admin > 0:
+
+    st.warning(
+        "No se encontró ningún turno con ese ID."
+    )
