@@ -386,10 +386,10 @@ with tab5:
             key="eliminar_turno"
         ):
 
-            st.session_state.archivo_turnos = [
-                t for t in st.session_state.archivo_turnos
-                if t.id_turno != turno_encontrado.id_turno
-            ]
+            archivo_turnos[:] = [
+    t for t in archivo_turnos
+    if t.id_turno != turno_encontrado.id_turno
+]
 
             guardar_csv()
 
