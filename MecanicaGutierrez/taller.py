@@ -31,32 +31,19 @@ with col2:
 st.markdown("""
 <style>
 
-/* Título principal */
 h1 {
     text-align: center;
+    color: #0d6efd;
 }
 
-/* Tarjetas de métricas */
 [data-testid="stMetric"] {
     background-color: #1e293b;
     border: 1px solid #334155;
     padding: 15px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
 }
 
-/* Colores de texto métricas */
-[data-testid="stMetricLabel"] {
-    color: white;
-}
-
-[data-testid="stMetricValue"] {
-    color: #38bdf8;
-    font-size: 30px;
-}
-
-/* Sidebar */
 section[data-testid="stSidebar"] {
     background-color: #111827;
 }
@@ -67,50 +54,53 @@ section[data-testid="stSidebar"] {
 # ==========================================================
 # DEFINICIÓN DEL REGISTRO
 # ==========================================================
-# id_turno es la CLAVE PRINCIPAL del registro.
-# Cada turno posee un identificador único que permite
-# localizarlo mediante búsqueda secuencial.
 
 @dataclass
 class RegistroTurno:
-    id_turno: int
+    id_turno: int      # Clave principal
     patente: str
     modelo_auto: str
     tipo_servicio: str
     costo: float
     estado: str
 
-
 # ==========================================================
 # ARCHIVO DE REGISTROS
 # ==========================================================
 
-archivo_turnos = [
-    RegistroTurno(
-        5001,
-        "AA890BB",
-        "Volkswagen Amarok",
-        "Cambio Filtros y Aceite",
-        45000.0,
-        "En Taller"
-    ),
-    RegistroTurno(
-        5002,
-        "AF543CC",
-        "Ford Focus",
-        "Cambio de Pastillas Freno",
-        32000.0,
-        "Pendiente"
-    ),
-    RegistroTurno(
-        5003,
-        "LOK789",
-        "Renault Clio",
-        "Revisión Eléctrica",
-        15000.0,
-        "Terminado"
-    )
-]
+if "archivo_turnos" not in st.session_state:
+
+    st.session_state.archivo_turnos = [
+
+        RegistroTurno(
+            5001,
+            "AA890BB",
+            "Volkswagen Amarok",
+            "Cambio Filtros y Aceite",
+            45000.0,
+            "En Taller"
+        ),
+
+        RegistroTurno(
+            5002,
+            "AF543CC",
+            "Ford Focus",
+            "Cambio de Pastillas Freno",
+            32000.0,
+            "Pendiente"
+        ),
+
+        RegistroTurno(
+            5003,
+            "LOK789",
+            "Renault Clio",
+            "Revisión Eléctrica",
+            15000.0,
+            "Terminado"
+        )
+    ]
+
+archivo_turnos = st.session_state.archivo_turnos
 
 # ==========================================================
 # SIDEBAR
@@ -118,16 +108,16 @@ archivo_turnos = [
 
 st.sidebar.title("🔧 Mecánica Gutiérrez")
 
-st.sidebar.markdown("""
-### Sistema de Gestión de Turnos
+st.sidebar.info("""
+Sistema de Gestión de Turnos
 
-**Materia:**  
+Materia:
 Algoritmos y Estructuras de Datos
 
-**Proyecto:**  
+Proyecto:
 Diseño de E-Commerce con IA
 
-**Alumno:**  
+Alumno:
 Pablo Ignacio Gutiérrez
 """)
 
@@ -153,25 +143,20 @@ terminados = sum(1 for t in archivo_turnos if t.estado == "Terminado")
 
 col1, col2, col3, col4 = st.columns(4)
 
-with col1:
-    st.metric("📋 Total", total)
-
-with col2:
-    st.metric("🔧 En Taller", en_taller)
-
-with col3:
-    st.metric("🟡 Pendientes", pendientes)
-
-with col4:
-    st.metric("✅ Terminados", terminados)
+col1.metric("📋 Total", total)
+col2.metric("🔧 En Taller", en_taller)
+col3.metric("🟡 Pendientes", pendientes)
+col4.metric("✅ Terminados", terminados)
 
 # ==========================================================
 # PESTAÑAS
 # ==========================================================
 
-tab1, tab2 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "📋 Turnos",
-    "🔍 Buscar"
+    "🔍 Buscar",
+    "📅 Solicitar Turno",
+    "📞 Contacto"
 ])
 
 # ==========================================================
@@ -200,7 +185,6 @@ with tab2:
 
     id_input = st.number_input(
         "Ingrese el ID del turno:",
-        min_value=1,
         value=5001,
         step=1
     )
@@ -209,26 +193,17 @@ with tab2:
 
         encontrado = False
 
-        # Búsqueda Secuencial por la clave principal
         for turno in archivo_turnos:
 
             if turno.id_turno == id_input:
 
                 st.success("✅ Registro encontrado")
 
-                st.markdown(f"""
-### 🚗 Información del Vehículo
-
-**ID de Turno:** {turno.id_turno}
-
-**Patente:** {turno.patente}
-
-**Modelo:** {turno.modelo_auto}
-
-**Servicio:** {turno.tipo_servicio}
-
-**Costo:** ${turno.costo:,.2f}
-""")
+                st.write(f"**ID:** {turno.id_turno}")
+                st.write(f"**Patente:** {turno.patente}")
+                st.write(f"**Vehículo:** {turno.modelo_auto}")
+                st.write(f"**Servicio:** {turno.tipo_servicio}")
+                st.write(f"**Costo:** ${turno.costo:,.2f}")
 
                 if turno.estado == "Terminado":
                     st.success("🟢 Estado: Terminado")
@@ -243,10 +218,126 @@ with tab2:
                 break
 
         if not encontrado:
+            st.error(
+                f"No se encontró ningún registro con ID {id_input}"
+            )
+
+# ==========================================================
+# TAB 3 - SOLICITAR TURNO
+# ==========================================================
+
+with tab3:
+
+    st.subheader("📅 Solicitar Nuevo Turno")
+
+    nombre_cliente = st.text_input(
+        "Nombre y Apellido"
+    )
+
+    telefono = st.text_input(
+        "Teléfono"
+    )
+
+    patente = st.text_input(
+        "Patente"
+    )
+
+    modelo = st.text_input(
+        "Modelo del Vehículo"
+    )
+
+    servicio = st.selectbox(
+        "Tipo de Servicio",
+        [
+            "Cambio de Aceite",
+            "Cambio de Pastillas de Freno",
+            "Revisión Eléctrica",
+            "Alineación y Balanceo",
+            "Diagnóstico General"
+        ]
+    )
+
+    fecha = st.date_input(
+        "Fecha Deseada"
+    )
+
+    if st.button("Reservar Turno"):
+
+        if (
+            nombre_cliente.strip() == ""
+            or telefono.strip() == ""
+            or patente.strip() == ""
+            or modelo.strip() == ""
+        ):
 
             st.error(
-                f"❌ No se encontró ningún registro con ID {id_input}"
+                "⚠️ Complete todos los campos."
             )
+
+        else:
+
+            nuevo_id = max(
+                turno.id_turno
+                for turno in archivo_turnos
+            ) + 1
+
+            nuevo_turno = RegistroTurno(
+                nuevo_id,
+                patente.upper(),
+                modelo,
+                servicio,
+                0.0,
+                "Pendiente"
+            )
+
+            archivo_turnos.append(
+                nuevo_turno
+            )
+
+            st.success(
+                f"✅ Turno reservado correctamente.\n\n"
+                f"ID asignado: {nuevo_id}\n\n"
+                f"Fecha solicitada: {fecha}"
+            )
+
+            st.balloons()
+
+# ==========================================================
+# TAB 4 - CONTACTO
+# ==========================================================
+
+with tab4:
+
+    st.subheader("📞 Información de Contacto")
+
+    st.markdown("""
+### 🔧 Mecánica Gutiérrez
+
+📍 Dirección: Resistencia, Chaco, Argentina
+
+📞 Teléfono: (362) 123-4567
+
+📧 Email: mecanicagutierrez@gmail.com
+
+🕒 Horarios de Atención
+
+- Lunes a Viernes: 08:00 - 12:00 hs
+- Lunes a Viernes: 16:00 - 20:00 hs
+- Sábados: 08:00 - 12:00 hs
+
+### 🚗 Servicios
+
+- Mecánica General
+- Electricidad Automotriz
+- Cambio de Aceite
+- Frenos y Suspensión
+- Diagnóstico Computarizado
+- Alineación y Balanceo
+""")
+
+    st.success(
+        "¡Gracias por confiar en Mecánica Gutiérrez!"
+    )
 
 # ==========================================================
 # PIE DE PÁGINA
