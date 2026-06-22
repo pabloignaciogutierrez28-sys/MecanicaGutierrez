@@ -313,16 +313,15 @@ with tab4:
     st.markdown("""
 ### 🔧 Mecánica Gutiérrez
 
-📍 Dirección: Resistencia, Chaco, Argentina
+📍 Dirección: Florencia, Santa Fe, Argentina
 
-📞 Teléfono: (362) 123-4567
+📞 Teléfono: (3482) 44-49-58
 
-📧 Email: mecanicagutierrez@gmail.com
+📧 Email: pabloignaciogutierrez28@gmail.com
 
 🕒 Horarios de Atención
 
-- Lunes a Viernes: 08:00 - 12:00 hs
-- Lunes a Viernes: 16:00 - 20:00 hs
+- Lunes a Viernes: 08:00 - 12:00 hs  Por la tarde 15:00 - 20:00 hs
 - Sábados: 08:00 - 12:00 hs
 
 ### 🚗 Servicios
