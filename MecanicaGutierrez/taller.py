@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 st.image(
-    "imagenes/mecanica_gutierrez.jpg",
+    "mecanica_gutierrez.jpg.jpg",
     use_container_width=True
 )
 st.markdown("""
