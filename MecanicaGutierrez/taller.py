@@ -363,18 +363,43 @@ with tab5:
             step=1000.0
         )
 
-        if st.button("Guardar Cambios", key="guardar_turno"):
-            turno_encontrado.estado = nuevo_estado
-            turno_encontrado.costo = nuevo_costo
-            
-            guardar_csv()
+    if st.button("Guardar Cambios", key="guardar_turno"):
+    turno_encontrado.estado = nuevo_estado
+    turno_encontrado.costo = nuevo_costo
 
-            st.success("✅ Turno actualizado correctamente")
-            st.rerun()
+    guardar_csv()
 
-    elif id_admin > 0:
-        st.warning("Ingrese un ID válido para buscar un turno.")
+    st.success("✅ Turno actualizado correctamente")
+    st.rerun()
 
+
+# ELIMINAR TURNO
+st.divider()
+
+confirmar = st.checkbox(
+    "Confirmo que deseo eliminar este turno"
+)
+
+if confirmar:
+
+    if st.button(
+        "🗑️ Eliminar Turno",
+        key="eliminar_turno"
+    ):
+
+        archivo_turnos.remove(turno_encontrado)
+
+        guardar_csv()
+
+        st.success(
+            "✅ Turno eliminado correctamente"
+        )
+
+        st.rerun()
+
+
+elif id_admin > 0:
+    st.warning("Ingrese un ID válido para buscar un turno.")
 # ==========================================================
 # PIE DE PÁGINA
 # ==========================================================
