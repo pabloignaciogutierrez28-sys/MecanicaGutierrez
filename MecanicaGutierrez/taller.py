@@ -63,44 +63,52 @@ class RegistroTurno:
     tipo_servicio: str
     costo: float
     estado: str
+    def guardar_csv():
+
+    datos = []
+
+    for turno in archivo_turnos:
+
+        datos.append({
+            "id_turno": turno.id_turno,
+            "patente": turno.patente,
+            "modelo_auto": turno.modelo_auto,
+            "tipo_servicio": turno.tipo_servicio,
+            "costo": turno.costo,
+            "estado": turno.estado
+        })
+
+    pd.DataFrame(datos).to_csv(
+        "turnos.csv",
+        index=False
+    )
 
 # ==========================================================
 # ARCHIVO DE REGISTROS
 # ==========================================================
+import os
 
-if "archivo_turnos" not in st.session_state:
+if os.path.exists("turnos.csv"):
 
-    st.session_state.archivo_turnos = [
+    df_csv = pd.read_csv("turnos.csv")
 
-        RegistroTurno(
-            5001,
-            "AA890BB",
-            "Volkswagen Amarok",
-            "Cambio Filtros y Aceite",
-            45000.0,
-            "En Taller"
-        ),
+    archivo_turnos = []
 
-        RegistroTurno(
-            5002,
-            "AF543CC",
-            "Ford Focus",
-            "Cambio de Pastillas Freno",
-            32000.0,
-            "Pendiente"
-        ),
+    for _, fila in df_csv.iterrows():
 
-        RegistroTurno(
-            5003,
-            "LOK789",
-            "Renault Clio",
-            "Revisión Eléctrica",
-            15000.0,
-            "Terminado"
+        archivo_turnos.append(
+            RegistroTurno(
+                int(fila["id_turno"]),
+                fila["patente"],
+                fila["modelo_auto"],
+                fila["tipo_servicio"],
+                float(fila["costo"]),
+                fila["estado"]
+            )
         )
-    ]
 
-archivo_turnos = st.session_state.archivo_turnos
+else:
+    archivo_turnos = []
 
 # ==========================================================
 # SIDEBAR
@@ -294,10 +302,11 @@ with tab3:
                 0.0,
                 "Pendiente"
             )
-
             archivo_turnos.append(
                 nuevo_turno
-            )
+                )
+
+             guardar_csv()
 
             st.success(
                 f"✅ Turno reservado correctamente.\n\n"
@@ -342,7 +351,7 @@ with tab4:
     st.success(
         "¡Gracias por confiar en Mecánica Gutiérrez!"
     )
-    # ==========================================================
+# ==========================================================
 # TAB 5 - ADMINISTRAR TURNOS
 # ==========================================================
 
