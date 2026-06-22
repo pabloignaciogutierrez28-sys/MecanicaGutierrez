@@ -1,7 +1,7 @@
 import streamlit as st
 from dataclasses import dataclass
 
-# 1. Definición del Registro (Usamos dataclass que es más moderno)
+# 1. Definición del Registro
 @dataclass
 class RegistroTurno:
     id_turno: int
@@ -42,3 +42,4 @@ if st.button("Buscar"):
     
     if not encontrado:
         st.error(f"No se encontró ningún registro con ID {id_input}")
+            
