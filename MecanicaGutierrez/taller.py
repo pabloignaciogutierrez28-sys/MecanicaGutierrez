@@ -11,7 +11,10 @@ st.set_page_config(
     page_icon="🔧",
     layout="wide"
 )
-st.image("MecanicaGutierrez/banner.jpg", use_container_width=True)
+st.image(
+    "MecanicaGutierrez/banner.jpg",
+    width=600
+)
 st.markdown("""
 <style>
 .main {
