@@ -54,7 +54,6 @@ section[data-testid="stSidebar"] {
 # ==========================================================
 # DEFINICIÓN DEL REGISTRO
 # ==========================================================
-
 @dataclass
 class RegistroTurno:
     id_turno: int      # Clave principal
@@ -63,12 +62,10 @@ class RegistroTurno:
     tipo_servicio: str
     costo: float
     estado: str
-    def guardar_csv():
 
+def guardar_csv():
     datos = []
-
     for turno in archivo_turnos:
-
         datos.append({
             "id_turno": turno.id_turno,
             "patente": turno.patente,
@@ -304,7 +301,7 @@ with tab3:
             )
             archivo_turnos.append(
                 nuevo_turno
-                )
+            )
 
              guardar_csv()
 
