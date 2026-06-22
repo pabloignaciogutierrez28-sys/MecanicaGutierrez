@@ -11,9 +11,7 @@ st.set_page_config(
     page_icon="🔧",
     layout="wide"
 )
-from PIL import Image
-
-imagen = Image.open("banner.jpg")
+st.image("banner.jpg", use_container_width=True)
 st.image(imagen, use_container_width=True)
 st.markdown("""
 <style>
