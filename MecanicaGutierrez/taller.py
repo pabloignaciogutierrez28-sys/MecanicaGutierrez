@@ -21,7 +21,7 @@ col1, col2, col3 = st.columns([1, 3, 1])
 with col2:
     st.image(
         "MecanicaGutierrez/banner.jpg",
-        width=700
+        width=500
     )
 
 # ==========================================================
