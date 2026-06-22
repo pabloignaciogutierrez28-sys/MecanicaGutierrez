@@ -328,7 +328,6 @@ with tab4:
 # ==========================================================
 
 with tab5:
-    with tab5:
 
     st.subheader("🛠️ Administrar Turnos")
 
@@ -394,15 +393,10 @@ with tab5:
 
             guardar_csv()
 
-            st.success(
-                "✅ Turno eliminado correctamente"
-            )
-
+            st.success("✅ Turno eliminado correctamente")
             st.rerun()
 
     elif id_admin > 0:
 
-        st.warning(
-            "No se encontró ningún turno con ese ID."
-        )
+        st.warning("No se encontró ningún turno con ese ID.")
     
