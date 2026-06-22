@@ -126,9 +126,6 @@ st.sidebar.image(
 st.sidebar.info("""
 Sistema de Gestión de Turnos
 
-Materia:
-Algoritmos y Estructuras de Datos
-
 Proyecto:
 Diseño de E-Commerce con IA
 
