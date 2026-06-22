@@ -152,11 +152,12 @@ col4.metric("✅ Terminados", terminados)
 # PESTAÑAS
 # ==========================================================
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📋 Turnos",
     "🔍 Buscar",
     "📅 Solicitar Turno",
-    "📞 Contacto"
+    "📞 Contacto",
+    "🛠️ Administrar"
 ])
 
 # ==========================================================
@@ -337,6 +338,74 @@ with tab4:
     st.success(
         "¡Gracias por confiar en Mecánica Gutiérrez!"
     )
+    # ==========================================================
+# TAB 5 - ADMINISTRAR TURNOS
+# ==========================================================
+
+with tab5:
+
+    st.subheader("🛠️ Administrar Turnos")
+
+    id_admin = st.number_input(
+        "Ingrese el ID del turno",
+        min_value=1,
+        step=1,
+        key="admin_id"
+    )
+
+    turno_encontrado = None
+
+    for turno in archivo_turnos:
+        if turno.id_turno == id_admin:
+            turno_encontrado = turno
+            break
+
+    if turno_encontrado:
+
+        st.success("✅ Turno encontrado")
+
+        st.write(f"**Patente:** {turno_encontrado.patente}")
+        st.write(f"**Vehículo:** {turno_encontrado.modelo_auto}")
+        st.write(f"**Servicio:** {turno_encontrado.tipo_servicio}")
+
+        estados = [
+            "Pendiente",
+            "En Taller",
+            "Terminado"
+        ]
+
+        nuevo_estado = st.selectbox(
+            "Estado del trabajo",
+            estados,
+            index=estados.index(turno_encontrado.estado)
+        )
+
+        nuevo_costo = st.number_input(
+            "Costo Final",
+            min_value=0.0,
+            value=float(turno_encontrado.costo),
+            step=1000.0
+        )
+
+        if st.button(
+            "Guardar Cambios",
+            key="guardar_turno"
+        ):
+
+            turno_encontrado.estado = nuevo_estado
+            turno_encontrado.costo = nuevo_costo
+
+            st.success(
+                "✅ Turno actualizado correctamente"
+            )
+
+            st.rerun()
+
+    elif id_admin > 0:
+
+        st.warning(
+            "Ingrese un ID válido para buscar un turno."
+        )
 
 # ==========================================================
 # PIE DE PÁGINA
