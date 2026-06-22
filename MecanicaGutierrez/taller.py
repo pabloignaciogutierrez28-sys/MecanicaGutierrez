@@ -362,8 +362,8 @@ with tab5:
             value=float(turno_encontrado.costo),
             step=1000.0
         )
-
     if st.button("Guardar Cambios", key="guardar_turno"):
+
     turno_encontrado.estado = nuevo_estado
     turno_encontrado.costo = nuevo_costo
 
@@ -396,8 +396,7 @@ if confirmar:
         )
 
         st.rerun()
-
-
+    
 elif id_admin > 0:
     st.warning("Ingrese un ID válido para buscar un turno.")
 # ==========================================================
